@@ -7,7 +7,6 @@ import com.github.claudecodegui.bridge.NodeDetector;
 import com.github.claudecodegui.provider.common.BaseSDKBridge;
 import com.github.claudecodegui.provider.common.MessageCallback;
 import com.github.claudecodegui.provider.common.SDKResult;
-import com.intellij.openapi.diagnostic.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
