@@ -2029,6 +2029,58 @@ public class CodemossSettingsService {
         writeConfig(config);
     }
 
+    // ==================== CodeBuddy Configuration ====================
+
+    /**
+     * Read the CodeBuddy auth token (CODEBUDDY_AUTH_TOKEN) from the codebuddy
+     * section of ~/.codemoss/config.json. Returns "" if not configured.
+     */
+    public String getCodeBuddyAuthToken() throws IOException {
+        JsonObject cb = readCodeBuddySection();
+        if (cb == null || !cb.has("authToken") || cb.get("authToken").isJsonNull()) {
+            return "";
+        }
+        return cb.get("authToken").getAsString();
+    }
+
+    /**
+     * Read the CodeBuddy internet environment (CODEBUDDY_INTERNET_ENVIRONMENT)
+     * from the codebuddy section. Defaults to "ioa" (enterprise iOA) when unset.
+     */
+    public String getCodeBuddyInternetEnv() throws IOException {
+        JsonObject cb = readCodeBuddySection();
+        if (cb == null || !cb.has("internetEnv") || cb.get("internetEnv").isJsonNull()) {
+            return "ioa";
+        }
+        String value = cb.get("internetEnv").getAsString().trim();
+        return value.isEmpty() ? "ioa" : value;
+    }
+
+    /**
+     * Persist CodeBuddy auth config (token + environment) into the codebuddy section.
+     */
+    public void saveCodeBuddyConfig(String authToken, String internetEnv) throws IOException {
+        JsonObject config = readConfig();
+        JsonObject cb;
+        if (config.has("codebuddy") && config.get("codebuddy").isJsonObject()) {
+            cb = config.getAsJsonObject("codebuddy");
+        } else {
+            cb = new JsonObject();
+        }
+        cb.addProperty("authToken", authToken != null ? authToken : "");
+        cb.addProperty("internetEnv", internetEnv != null && !internetEnv.isEmpty() ? internetEnv : "ioa");
+        config.add("codebuddy", cb);
+        writeConfig(config);
+    }
+
+    private JsonObject readCodeBuddySection() throws IOException {
+        JsonObject config = readConfig();
+        if (!config.has("codebuddy") || !config.get("codebuddy").isJsonObject()) {
+            return null;
+        }
+        return config.getAsJsonObject("codebuddy");
+    }
+
     public String getCodexRuntimeAccessMode() throws IOException {
         JsonObject config = readConfig();
         if (!config.has("codex") || !config.get("codex").isJsonObject()) {

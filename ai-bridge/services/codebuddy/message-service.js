@@ -145,6 +145,11 @@ export async function sendMessage(args = {}) {
       // Forward canonical message types; drop CodeBuddy-only auxiliary messages.
       if (FORWARDED_TYPES.has(msg.type)) {
         emitMessage(msg);
+        // Announce the session id (from the system init message) so the Java
+        // side can store it and resume the conversation on later turns.
+        if (msg.type === 'system' && msg.subtype === 'init' && msg.session_id) {
+          emit('[SESSION_ID] ' + msg.session_id);
+        }
         if (msg.type === 'assistant') {
           const t = extractAssistantText(msg);
           if (t) finalResult = t;

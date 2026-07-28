@@ -6,6 +6,7 @@ import com.github.claudecodegui.settings.CodexSettingsManager;
 import com.github.claudecodegui.notifications.ClaudeNotifier;
 import com.github.claudecodegui.provider.claude.ClaudeSDKBridge;
 import com.github.claudecodegui.provider.codex.CodexSDKBridge;
+import com.github.claudecodegui.provider.codebuddy.CodeBuddySDKBridge;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.intellij.openapi.diagnostic.Logger;
@@ -30,6 +31,7 @@ public class SessionSendService {
     private final Gson gson;
     private final ClaudeSDKBridge claudeSDKBridge;
     private final CodexSDKBridge codexSDKBridge;
+    private final CodeBuddySDKBridge codeBuddySDKBridge;
     private final SessionContextService contextService;
 
     public SessionSendService(
@@ -41,6 +43,7 @@ public class SessionSendService {
             Gson gson,
             ClaudeSDKBridge claudeSDKBridge,
             CodexSDKBridge codexSDKBridge,
+            CodeBuddySDKBridge codeBuddySDKBridge,
             SessionContextService contextService
     ) {
         this.project = project;
@@ -51,6 +54,7 @@ public class SessionSendService {
         this.gson = gson;
         this.claudeSDKBridge = claudeSDKBridge;
         this.codexSDKBridge = codexSDKBridge;
+        this.codeBuddySDKBridge = codeBuddySDKBridge;
         this.contextService = contextService;
     }
 
@@ -133,6 +137,10 @@ public class SessionSendService {
                     normalizedRequestedEffort,
                     effectiveCodexServiceTier
             );
+        }
+
+        if ("codebuddy".equals(currentProvider)) {
+            return sendToCodeBuddy(channelId, input, effectivePermissionMode, normalizedRequestedEffort);
         }
 
         return sendToClaude(channelId, input, attachments, openedFilesJson, agentPrompt,
@@ -323,6 +331,49 @@ public class SessionSendService {
                         requestedReasoningEffort != null ? requestedReasoningEffort : state.getReasoningEffort(),
                         handler
                 ).thenApply(result -> null);
+    }
+
+    private CompletableFuture<Void> sendToCodeBuddy(
+            String channelId,
+            String input,
+            String effectivePermissionMode,
+            String requestedReasoningEffort
+    ) {
+        // CodeBuddy's message model mirrors Claude's, so we reuse ClaudeMessageHandler
+        // for rendering. Auth config is read from the codebuddy section of config.json.
+        ClaudeMessageHandler handler = new ClaudeMessageHandler(
+                project,
+                state,
+                callbackFacade.getCallbackHandler(),
+                messageParser,
+                messageMerger,
+                gson
+        );
+
+        String authToken;
+        String internetEnv;
+        try {
+            CodemossSettingsService settingsService = new CodemossSettingsService();
+            authToken = settingsService.getCodeBuddyAuthToken();
+            internetEnv = settingsService.getCodeBuddyInternetEnv();
+        } catch (Exception e) {
+            LOG.warn("[CodeBuddy] Failed to read codebuddy config: " + e.getMessage());
+            authToken = "";
+            internetEnv = "ioa";
+        }
+
+        return codeBuddySDKBridge.sendMessage(
+                channelId,
+                input,
+                state.getSessionId(),
+                state.getCwd(),
+                effectivePermissionMode,
+                state.getModel(),
+                requestedReasoningEffort != null ? requestedReasoningEffort : state.getReasoningEffort(),
+                authToken,
+                internetEnv,
+                handler
+        ).thenApply(result -> null);
     }
 
     private boolean readAutoOpenFileEnabled() {

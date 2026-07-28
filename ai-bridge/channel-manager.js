@@ -26,6 +26,7 @@
 import { readStdinData } from './utils/stdin-utils.js';
 import { handleClaudeCommand } from './channels/claude-channel.js';
 import { handleCodexCommand } from './channels/codex-channel.js';
+import { handleCodeBuddyCommand } from './channels/codebuddy-channel.js';
 import { getSdkStatus, isClaudeSdkAvailable, isCodexSdkAvailable } from './utils/sdk-loader.js';
 import { injectStartupEnvVars, configureCliIdentity } from './config/api-config.js';
 
@@ -117,6 +118,7 @@ async function handleSystemCommand(command, args, stdinData) {
 const providerHandlers = {
   claude: handleClaudeCommand,
   codex: handleCodexCommand,
+  codebuddy: handleCodeBuddyCommand,
   system: handleSystemCommand
 };
 
