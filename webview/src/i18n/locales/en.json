@@ -176,6 +176,11 @@
         "placeholder": "e.g. /usr/local/bin/claude — leave empty to use the bundled SDK",
         "hint": "Optional. When set, the plugin spawns this binary instead of the bundled @anthropic-ai/claude-agent-sdk. Daemon restarts on save."
       },
+      "codebuddyConfig": {
+        "label": "CodeBuddy Token (iOA)",
+        "tokenPlaceholder": "Paste CODEBUDDY_AUTH_TOKEN (starts with ck_)",
+        "hint": "Used by the CodeBuddy engine. Environment is usually iOA (enterprise); after saving, switch to the CodeBuddy engine to chat."
+      },
       "workingDirectory": {
         "label": "Working Directory",
         "placeholder": "e.g. project1 or leave empty to use project root",

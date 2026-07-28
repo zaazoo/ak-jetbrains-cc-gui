@@ -7,6 +7,7 @@ import { ToastContainer } from '../Toast';
 import SettingsHeader from './SettingsHeader';
 import SettingsSidebar, { type SettingsTab } from './SettingsSidebar';
 import BasicConfigSection from './BasicConfigSection';
+import CodeBuddyConfigSection from './CodeBuddyConfigSection';
 import ProviderTabSection from './ProviderTabSection';
 import DependencySection from './DependencySection';
 import UsageSection from './UsageSection';
@@ -461,6 +462,7 @@ const SettingsView = ({
         <div className={`${styles.settingsContent} ${currentTab === 'providers' ? styles.providerSettingsContent : ''}`}>
           {/* Basic configuration */}
           <div style={currentTab === 'basic' ? BLOCK_STYLE : NONE_STYLE}>
+            <CodeBuddyConfigSection />
             <BasicConfigSection
               theme={themePreference}
               onThemeChange={setThemePreference}

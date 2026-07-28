@@ -430,6 +430,11 @@ interface Window {
   updateClaudeCliPath?: (path: string) => void;
 
   /**
+   * Update CodeBuddy provider config (auth token + environment)
+   */
+  updateCodeBuddyConfig?: (jsonStr: string) => void;
+
+  /**
    * Update working directory configuration
    */
   updateWorkingDirectory?: (json: string) => void;

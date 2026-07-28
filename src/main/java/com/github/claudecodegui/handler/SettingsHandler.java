@@ -27,6 +27,7 @@ public class SettingsHandler extends BaseMessageHandler {
     private final ModelProviderHandler modelProviderHandler;
     private final NodePathHandler nodePathHandler;
     private final ClaudeCliPathHandler claudeCliPathHandler;
+    private final CodeBuddyConfigHandler codeBuddyConfigHandler;
     private final ProjectConfigHandler projectConfigHandler;
     private final CodexSubscriptionQuotaHandler codexSubscriptionQuotaHandler;
 
@@ -41,6 +42,8 @@ public class SettingsHandler extends BaseMessageHandler {
         "set_node_path",
         "get_claude_cli_path",
         "set_claude_cli_path",
+        "get_codebuddy_config",
+        "save_codebuddy_config",
         "get_usage_statistics",
         "get_codex_subscription_quota",
         "get_working_directory",
@@ -106,6 +109,7 @@ public class SettingsHandler extends BaseMessageHandler {
         this.modelProviderHandler = new ModelProviderHandler(context, usagePushService);
         this.nodePathHandler = new NodePathHandler(context);
         this.claudeCliPathHandler = new ClaudeCliPathHandler(context);
+        this.codeBuddyConfigHandler = new CodeBuddyConfigHandler(context);
         this.projectConfigHandler = new ProjectConfigHandler(context);
         this.codexSubscriptionQuotaHandler = new CodexSubscriptionQuotaHandler(context);
         // Register theme change listener to automatically notify frontend when IDE theme changes
@@ -164,6 +168,13 @@ public class SettingsHandler extends BaseMessageHandler {
                 return true;
             case "set_claude_cli_path":
                 claudeCliPathHandler.handleSetClaudeCliPath(content);
+                return true;
+            // CodeBuddy provider config (auth token + environment)
+            case "get_codebuddy_config":
+                codeBuddyConfigHandler.handleGetCodeBuddyConfig();
+                return true;
+            case "save_codebuddy_config":
+                codeBuddyConfigHandler.handleSaveCodeBuddyConfig(content);
                 return true;
             // Project configuration
             case "get_usage_statistics":

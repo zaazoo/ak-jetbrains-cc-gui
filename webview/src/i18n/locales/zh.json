@@ -176,6 +176,11 @@
         "placeholder": "例如 /usr/local/bin/claude — 留空则使用内置 SDK",
         "hint": "可选。设置后，插件将启动此二进制文件，而非内置的 @anthropic-ai/claude-agent-sdk。保存时会重启守护进程。"
       },
+      "codebuddyConfig": {
+        "label": "CodeBuddy Token（iOA）",
+        "tokenPlaceholder": "粘贴 CODEBUDDY_AUTH_TOKEN（ck_ 开头）",
+        "hint": "用于 CodeBuddy 引擎。环境一般选 iOA（企业）；保存后切换到 CodeBuddy 引擎即可对话。"
+      },
       "workingDirectory": {
         "label": "工作目录",
         "placeholder": "例如 project1 或留空使用项目根目录",
