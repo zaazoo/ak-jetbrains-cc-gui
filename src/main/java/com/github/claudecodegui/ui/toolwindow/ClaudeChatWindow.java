@@ -1329,11 +1329,6 @@ public class ClaudeChatWindow {
             }
 
             @Override
-            public CodeBuddySDKBridge getCodeBuddySDKBridge() {
-                return codeBuddySDKBridge;
-            }
-
-            @Override
             public JPanel getMainPanel() {
                 return mainPanel;
             }
@@ -1433,11 +1428,6 @@ public class ClaudeChatWindow {
             @Override
             public CodexSDKBridge getCodexSDKBridge() {
                 return codexSDKBridge;
-            }
-
-            @Override
-            public CodeBuddySDKBridge getCodeBuddySDKBridge() {
-                return codeBuddySDKBridge;
             }
 
             @Override
