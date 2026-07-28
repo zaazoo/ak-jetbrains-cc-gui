@@ -28,6 +28,7 @@ import path from 'node:path';
 import { createInterface } from 'readline';
 import { handleClaudeCommand } from './channels/claude-channel.js';
 import { handleCodexCommand } from './channels/codex-channel.js';
+import { handleCodeBuddyCommand } from './channels/codebuddy-channel.js';
 import { loadClaudeSdk, isClaudeSdkAvailable } from './utils/sdk-loader.js';
 import {
   sendMessagePersistent,
@@ -478,6 +479,9 @@ async function processRequest(request) {
           break;
         case 'codex':
           await handleCodexCommand(command, [], stdinData);
+          break;
+        case 'codebuddy':
+          await handleCodeBuddyCommand(command, [], stdinData);
           break;
         default:
           throw new Error(`Unknown provider: ${provider}`);
